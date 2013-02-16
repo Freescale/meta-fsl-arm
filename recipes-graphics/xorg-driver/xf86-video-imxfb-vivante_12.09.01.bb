@@ -3,14 +3,16 @@
 
 require recipes-graphics/xorg-driver/xorg-driver-video.inc
 
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 
 DEPENDS += "virtual/libx11 virtual/libgal-x11 gpu-viv-bin-mx6q"
 
 LIC_FILES_CHKSUM = "file://src/vivante_fbdev/vivante.h;endline=19;md5=93a322f91ec495569dcbcfbb2a95454a"
 
 SRC_URI = "${FSL_MIRROR}/xserver-xorg-video-imx-viv-${PV}.tar.gz \
-           file://Makefile.am-remove-prefixed-include-path.patch"
+           file://Makefile.am-remove-prefixed-include-path.patch \
+           file://dri.h \
+           file://sarea.h "
 SRC_URI[md5sum] = "1948119717aa01bed1f630be9ee7a708"
 SRC_URI[sha256sum] = "5b3be4b426d2d2803554df9e4d8919d1f9d17659c3153c71c6529f43c37e6ed1"
 
@@ -19,6 +21,11 @@ CFLAGS += " -I${STAGING_INCDIR}/xorg -I${STAGING_INCDIR}/drm"
 LDFLAGS += "-lm -ldl -lX11 -lGAL-x11"
 
 S = "${WORKDIR}/xserver-xorg-video-imx-viv-${PV}"
+
+do_configure_prepend () {
+	cp ${WORKDIR}/dri.h ${S}/src
+	cp ${WORKDIR}/sarea.h ${S}/src
+}
 
 do_install_append () {
 	install -d ${D}${includedir}
