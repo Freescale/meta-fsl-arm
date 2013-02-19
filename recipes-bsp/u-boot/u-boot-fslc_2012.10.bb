@@ -9,9 +9,9 @@ DEPENDS_mxs += "elftosb-native"
 PROVIDES += "u-boot"
 
 PV = "v2012.10"
-PR = "r3"
+PR = "r4"
 
-SRCREV = "01116f7a492283dae8c39d50183998488634720c"
+SRCREV = "7e6c682715cb11adc8fe6eef449a86ccc10d8183"
 SRC_URI = "git://github.com/Freescale/u-boot-imx.git"
 
 S = "${WORKDIR}/git"
