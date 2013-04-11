@@ -7309,17 +7309,4 @@ index fd05514..45191d1 100644
  
  	snd_soc_write(codec, SGTL5000_CHIP_DAC_VOL, 0x6060);
  	snd_soc_write(codec, SGTL5000_CHIP_ANA_ADC_CTRL,
-diff --git a/tools/perf/util/include/linux/compiler.h b/tools/perf/util/include/linux/compiler.h
-index 547628e..791f9dd 100644
---- a/tools/perf/util/include/linux/compiler.h
-+++ b/tools/perf/util/include/linux/compiler.h
-@@ -5,9 +5,7 @@
- #define __always_inline	inline
- #endif
- #define __user
--#ifndef __attribute_const__
- #define __attribute_const__
--#endif
- 
- #define __used		__attribute__((__unused__))
  
