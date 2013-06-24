@@ -4,7 +4,7 @@
 DESCRIPTION = "GPU driver and apps for x11 on mx51"
 LICENSE = "Proprietary"
 SECTION = "libs"
-PR = "r12"
+PR = "r13"
 
 # FIXME: Replace for correct AMD license
 LIC_FILES_CHKSUM = "file://usr/include/VG/openvg.h;endline=30;md5=b0109611dd76961057d4c45ae6519802"
@@ -42,6 +42,8 @@ do_install () {
     # FIXME: Fix sonames of broken libraries
     mv ${D}${libdir}/lib2dz160.so ${D}${libdir}/lib2dz160.so.0
     mv ${D}${libdir}/lib2dz430.so ${D}${libdir}/lib2dz430.so.0
+    ln -sf lib2dz160.so.0 ${D}${libdir}/lib2dz160.so
+    ln -sf lib2dz430.so.0 ${D}${libdir}/lib2dz430.so
 
     # FIXME: Remove unkown files
     rm -r ${D}${libdir}/libcsi.a \
