@@ -7,6 +7,6 @@ PV = "3.8+git${SRCPV}"
 PR = "r5"
 
 # patches-3.8
-SRCREV = "8a197c14157aca439ce104e4bf6cd12076f81630"
+SRCREV = "72053409242244eaa59497e665945ddeea69c397"
 
 COMPATIBLE_MACHINE = "(mxs|mx3|mx5|mx6)"
