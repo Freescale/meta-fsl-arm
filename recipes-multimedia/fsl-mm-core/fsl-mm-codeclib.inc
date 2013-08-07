@@ -14,6 +14,7 @@ inherit fsl-eula-unpack pkgconfig
 # FIXME: Quiet down the warnings during package
 INSANE_SKIP_${PN} = "ldflags textrel"
 INSANE_SKIP_${PN}-dev = "ldflags textrel"
+INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
 
 do_install () {
     install -d ${D}${includedir} ${D}${libdir}
