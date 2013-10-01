@@ -1,0 +1,46 @@
+From e1bfeb25d4d2d2ef6002986cca615817848b27dd Mon Sep 17 00:00:00 2001
+From: Prabhu Sundararaj <prabhu.sundararaj@freescale.com>
+Date: Thu, 11 Apr 2013 23:27:31 -0500
+Subject: [PATCH] DRM condition
+
+Signed-off-by: Prabhu Sundararaj <prabhu.sundararaj@freescale.com>
+---
+ src/launcher-util.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/src/launcher-util.c b/src/launcher-util.c
+index 9196e4f..7168f60 100644
+--- a/src/launcher-util.c
++++ b/src/launcher-util.c
+@@ -30,9 +30,9 @@
+ #include <sys/stat.h>
+ #include <sys/uio.h>
+ #include <fcntl.h>
+-
++#if defined(DRM)
+ #include <xf86drm.h>
+-
++#endif
+ #include "compositor.h"
+ #include "launcher-util.h"
+ #include "weston-launch.h"
+@@ -107,6 +107,7 @@ int
+ weston_launcher_drm_set_master(struct weston_compositor *compositor,
+			       int drm_fd, char master)
+ {
++#if defined(DRM)
+	struct msghdr msg;
+	struct cmsghdr *cmsg;
+	struct iovec iov;
+@@ -156,5 +157,8 @@ weston_launcher_drm_set_master(struct weston_compositor *compositor,
+		return -1;
+
+	return ret;
++#else
++    return 0;
++#endif
+ }
+
+-- 
+1.8.1.4
+
