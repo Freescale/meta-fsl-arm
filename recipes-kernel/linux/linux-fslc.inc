@@ -12,6 +12,9 @@ inherit kernel
 require recipes-kernel/linux/linux-imx.inc
 require recipes-kernel/linux/linux-dtb.inc
 
+# Avoid imx-test installation hacks
+IMX_TEST_SUPPORT = "n"
+
 SRC_URI = "git://github.com/Freescale/linux-mainline.git \
            file://defconfig"
 LOCALVERSION = "-fslc"
