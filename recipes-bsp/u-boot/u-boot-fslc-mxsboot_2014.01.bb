@@ -7,7 +7,7 @@ PROVIDES = "u-boot-mxsboot"
 
 PV = "v2014.01"
 
-SRCREV = "f5d80303de12e6fefc022426a73136a288f70294"
+SRCREV = "9e76b3808bce73f36f40ad8a3e06f7006037c386"
 SRCBRANCH = "patches-2014.01"
 SRC_URI = "git://github.com/Freescale/u-boot-imx.git;branch=${SRCBRANCH}"
 
