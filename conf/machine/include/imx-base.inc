@@ -36,6 +36,9 @@ PREFERRED_VERSION_directfb-examples_mx6 = "1.6.0"
 MACHINE_EXTRA_RRECOMMENDS = "kernel-modules"
 
 # Float-Point setting
+# handled by software
+# DEFAULTTUNE_mx6 ?= "cortexa9-neon"
+# handled by hardware
 DEFAULTTUNE_mx6 ?= "cortexa9hf-neon"
 
 # Sub-architecture support
