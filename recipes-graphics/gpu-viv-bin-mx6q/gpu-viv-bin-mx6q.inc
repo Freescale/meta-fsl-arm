@@ -227,7 +227,7 @@ FILES_libegl-mx6-dev = "${includedir}/EGL ${includedir}/KHR ${libdir}/pkgconfig/
 FILES_libegl-mx6-dbg = "${libdir}/.debug/libEGL${SOLIBS}"
 
 FILES_libgal-mx6 = "${libdir}/libGAL${SOLIBS}"
-FILES_libgal-mx6-dev = "${libdir}/libGAL${SOLIBSDEV}"
+FILES_libgal-mx6-dev = "${libdir}/libGAL${SOLIBSDEV} ${includedir}/HAL"
 FILES_libgal-mx6-dbg = "${libdir}/.debug/libGAL${SOLIBS}"
 
 FILES_libgl-mx6 = "${libdir}/libGL${REALSOLIBS}"
