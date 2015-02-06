@@ -1,0 +1,419 @@
+From 351f605f08b7fb808ed3fdcb57f61db478be2c59 Mon Sep 17 00:00:00 2001
+From: Nikolay Dimitrov <picmaster@mail.bg>
+Date: Fri, 6 Feb 2015 14:37:50 +0200
+Subject: [PATCH] ARM: imx6sl: Disable imx6sl-specific code when imx6sl SOC
+ support is disabled
+
+---
+ arch/arm/mach-imx/anatop.c       |   13 +++++++++++--
+ arch/arm/mach-imx/busfreq-imx6.c |   35 ++++++++++++++++++++++++++---------
+ arch/arm/mach-imx/gpc.c          |   23 ++++++++++++++++++++---
+ arch/arm/mach-imx/mxc.h          |    2 ++
+ arch/arm/mach-imx/pm-imx6.c      |   18 ++++++++++++++++--
+ arch/arm/mach-imx/system.c       |   16 ++++++++++++----
+ 6 files changed, 87 insertions(+), 20 deletions(-)
+
+diff --git a/arch/arm/mach-imx/anatop.c b/arch/arm/mach-imx/anatop.c
+index 9bdea7e..c58ae28 100644
+--- a/arch/arm/mach-imx/anatop.c
++++ b/arch/arm/mach-imx/anatop.c
+@@ -77,10 +77,13 @@ static inline void imx_anatop_disconnect_high_snvs(bool enable)
+ 
+ void imx_anatop_pre_suspend(void)
+ {
++#ifdef CONFIG_SOC_IMX6SL
+ 	if (cpu_is_imx6sl()) {
+ 		imx_anatop_enable_2p5_pulldown(true);
+ 		imx_anatop_disconnect_high_snvs(true);
+-	} else {
++	} else
++#endif
++	{
+ 		imx_anatop_enable_weak2p5(true);
+ 	}
+ 
+@@ -90,10 +93,14 @@ void imx_anatop_pre_suspend(void)
+ void imx_anatop_post_resume(void)
+ {
+ 	imx_anatop_enable_fet_odrive(false);
++
++#ifdef CONFIG_SOC_IMX6SL
+ 	if (cpu_is_imx6sl()) {
+ 		imx_anatop_enable_2p5_pulldown(false);
+ 		imx_anatop_disconnect_high_snvs(false);
+-	} else {
++	} else
++#endif
++	{
+ 		imx_anatop_enable_weak2p5(false);
+ 	}
+ }
+@@ -141,8 +148,10 @@ void __init imx_init_revision_from_anatop(void)
+ 	np = of_find_compatible_node(NULL, NULL, "fsl,imx6q-anatop");
+ 	anatop_base = of_iomap(np, 0);
+ 	WARN_ON(!anatop_base);
++#ifdef CONFIG_SOC_IMX6SL
+ 	if (of_device_is_compatible(np, "fsl,imx6sl-anatop"))
+ 		offset = ANADIG_DIGPROG_IMX6SL;
++#endif
+ 	digprog = readl_relaxed(anatop_base + offset);
+ 	iounmap(anatop_base);
+ 
+diff --git a/arch/arm/mach-imx/busfreq-imx6.c b/arch/arm/mach-imx/busfreq-imx6.c
+index 527b042..4b4b342 100644
+--- a/arch/arm/mach-imx/busfreq-imx6.c
++++ b/arch/arm/mach-imx/busfreq-imx6.c
+@@ -62,7 +62,6 @@ unsigned int ddr_normal_rate;
+ static int bus_freq_scaling_initialized;
+ static struct device *busfreq_dev;
+ static int busfreq_suspended;
+-static u32 org_arm_rate;
+ static int bus_freq_scaling_is_active;
+ static int high_bus_count, med_bus_count, audio_bus_count, low_bus_count;
+ static unsigned int ddr_low_rate;
+@@ -73,7 +72,6 @@ extern int update_ddr_freq(int ddr_rate);
+ extern int update_lpddr2_freq(int ddr_rate);
+ 
+ DEFINE_MUTEX(bus_freq_mutex);
+-static DEFINE_SPINLOCK(freq_lock);
+ 
+ static struct clk *pll2_400;
+ static struct clk *periph_clk;
+@@ -85,6 +83,17 @@ static struct clk *cpu_clk;
+ static struct clk *pll3;
+ static struct clk *pll2;
+ static struct clk *pll2_200;
++static struct clk *axi_sel_clk;
++static struct clk *pll3_pfd1_540m;
++
++static struct delayed_work low_bus_freq_handler;
++static struct delayed_work bus_freq_daemon;
++
++#ifdef CONFIG_SOC_IMX6SL
++static u32 org_arm_rate;
++
++static DEFINE_SPINLOCK(freq_lock);
++
+ static struct clk *pll1_sys;
+ static struct clk *periph2_clk;
+ static struct clk *ocram_clk;
+@@ -94,12 +103,8 @@ static struct clk *periph2_pre_clk;
+ static struct clk *periph2_clk2_sel;
+ static struct clk *periph2_clk2;
+ static struct clk *step_clk;
+-static struct clk *axi_sel_clk;
+-static struct clk *pll3_pfd1_540m;
+ 
+ static u32 pll2_org_rate;
+-static struct delayed_work low_bus_freq_handler;
+-static struct delayed_work bus_freq_daemon;
+ 
+ static void enter_lpm_imx6sl(void)
+ {
+@@ -250,14 +255,19 @@ static void exit_lpm_imx6sl(void)
+ 		ultra_low_bus_freq_mode = 0;
+ 	}
+ }
++#endif // CONFIG_SOC_IMX6SL
+ 
+ int reduce_bus_freq(void)
+ {
+ 	int ret = 0;
+ 	clk_prepare_enable(pll3);
++
++#ifdef CONFIG_SOC_IMX6SL
+ 	if (cpu_is_imx6sl())
+ 		enter_lpm_imx6sl();
+-	else {
++	else
++#endif
++	{
+ 		if (cpu_is_imx6dl() && (clk_get_parent(axi_sel_clk)
+ 			!= periph_clk))
+ 			/* Set axi to periph_clk */
+@@ -393,9 +403,13 @@ int set_high_bus_freq(int high_bus_freq)
+ 		return 0;
+ 
+ 	clk_prepare_enable(pll3);
++
++#ifdef CONFIG_SOC_IMX6SL
+ 	if (cpu_is_imx6sl())
+ 		exit_lpm_imx6sl();
+-	else {
++	else
++#endif
++	{
+ 		if (high_bus_freq) {
+ 			update_ddr_freq(ddr_normal_rate);
+ 			/* Make sure periph clk's parent also got updated */
+@@ -773,6 +787,7 @@ static int busfreq_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
++#ifdef CONFIG_SOC_IMX6SL
+ 	if (cpu_is_imx6sl()) {
+ 		pll1_sys = devm_clk_get(&pdev->dev, "pll1_sys");
+ 		if (IS_ERR(pll1_sys)) {
+@@ -840,8 +855,8 @@ static int busfreq_probe(struct platform_device *pdev)
+ 				__func__);
+ 			return PTR_ERR(periph2_clk2_sel);
+ 		}
+-
+ 	}
++#endif // CONFIG_SOC_IMX6SL
+ 
+ 	err = sysfs_create_file(&busfreq_dev->kobj, &dev_attr_enable.attr);
+ 	if (err) {
+@@ -880,9 +895,11 @@ static int busfreq_probe(struct platform_device *pdev)
+ 	register_pm_notifier(&imx_bus_freq_pm_notifier);
+ 	register_reboot_notifier(&imx_busfreq_reboot_notifier);
+ 
++#ifdef CONFIG_SOC_IMX6SL
+ 	if (cpu_is_imx6sl())
+ 		err = init_mmdc_lpddr2_settings(pdev);
+ 	else
++#endif
+ 		err = init_mmdc_ddr3_settings(pdev);
+ 	if (err) {
+ 		dev_err(busfreq_dev, "Busfreq init of MMDC failed\n");
+diff --git a/arch/arm/mach-imx/gpc.c b/arch/arm/mach-imx/gpc.c
+index 25e987c..dfdb1b7 100644
+--- a/arch/arm/mach-imx/gpc.c
++++ b/arch/arm/mach-imx/gpc.c
+@@ -55,8 +55,10 @@ static void __iomem *gpc_base;
+ static u32 gpc_wake_irqs[IMR_NUM];
+ static u32 gpc_saved_imrs[IMR_NUM];
+ static struct clk *gpu3d_clk, *gpu3d_shader_clk, *gpu2d_clk, *gpu2d_axi_clk;
++#ifdef CONFIG_SOC_IMX6SL
+ static struct clk *lcd_axi_clk, *lcd_pix_clk, *epdc_axi_clk, *epdc_pix_clk;
+ static struct clk *pxp_axi_clk;
++#endif
+ static struct clk *openvg_axi_clk, *vpu_clk, *ipg_clk;
+ static struct device *gpc_dev;
+ struct regulator *pu_reg;
+@@ -71,6 +73,7 @@ static struct regulator_init_data pu_dummy_initdata = {
+ };
+ static int pu_dummy_enable;
+ 
++#ifdef CONFIG_SOC_IMX6SL
+ static void imx_disp_clk(bool enable)
+ {
+ 	if (enable) {
+@@ -87,9 +90,11 @@ static void imx_disp_clk(bool enable)
+ 		clk_disable_unprepare(pxp_axi_clk);
+ 	}
+ }
++#endif // CONFIG_SOC_IMX6SL
+ 
+ static void imx_gpc_dispmix_on(void)
+ {
++#ifdef CONFIG_SOC_IMX6SL
+ 	if (cpu_is_imx6sl() &&
+ 		imx_get_soc_revision() >= IMX_CHIP_REVISION_1_2) {
+ 		imx_disp_clk(true);
+@@ -102,10 +107,12 @@ static void imx_gpc_dispmix_on(void)
+ 
+ 		imx_disp_clk(false);
+ 	}
++#endif
+ }
+ 
+ static void imx_gpc_dispmix_off(void)
+ {
++#ifdef CONFIG_SOC_IMX6SL
+ 	if (cpu_is_imx6sl() &&
+ 		imx_get_soc_revision() >= IMX_CHIP_REVISION_1_2) {
+ 		imx_disp_clk(true);
+@@ -121,6 +128,7 @@ static void imx_gpc_dispmix_off(void)
+ 
+ 		imx_disp_clk(false);
+ 	}
++#endif
+ }
+ 
+ void imx_gpc_pre_suspend(bool arm_power_off)
+@@ -224,10 +232,13 @@ void imx_gpc_irq_mask(struct irq_data *d)
+ static void imx_pu_clk(bool enable)
+ {
+ 	if (enable) {
++#ifdef CONFIG_SOC_IMX6SL
+ 		if (cpu_is_imx6sl()) {
+ 			clk_prepare_enable(gpu2d_clk);
+ 			clk_prepare_enable(openvg_axi_clk);
+-		} else {
++		} else
++#endif
++		{
+ 			clk_prepare_enable(gpu3d_clk);
+ 			clk_prepare_enable(gpu3d_shader_clk);
+ 			clk_prepare_enable(vpu_clk);
+@@ -236,10 +247,13 @@ static void imx_pu_clk(bool enable)
+ 			clk_prepare_enable(openvg_axi_clk);
+ 		}
+ 	} else {
++#ifdef CONFIG_SOC_IMX6SL
+ 		if (cpu_is_imx6sl()) {
+ 			clk_disable_unprepare(gpu2d_clk);
+ 			clk_disable_unprepare(openvg_axi_clk);
+-		} else {
++		} else
++#endif
++		{
+ 			clk_disable_unprepare(gpu3d_clk);
+ 			clk_disable_unprepare(gpu3d_shader_clk);
+ 			clk_disable_unprepare(vpu_clk);
+@@ -478,6 +492,7 @@ static int imx_gpc_probe(struct platform_device *pdev)
+ 	nb.notifier_call = &imx_gpc_regulator_notify;
+ 
+ 	/* Get gpu&vpu clk for power up PU by GPC */
++#ifdef CONFIG_SOC_IMX6SL
+ 	if (cpu_is_imx6sl()) {
+ 		gpu2d_clk = devm_clk_get(gpc_dev, "gpu2d_podf");
+ 		openvg_axi_clk = devm_clk_get(gpc_dev, "gpu2d_ovg");
+@@ -494,7 +509,9 @@ static int imx_gpc_probe(struct platform_device *pdev)
+ 			dev_err(gpc_dev, "failed to get clk!\n");
+ 			return -ENOENT;
+ 		}
+-	} else {
++	} else
++#endif // CONFIG_SOC_IMX6SL
++	{
+ 		gpu3d_clk = devm_clk_get(gpc_dev, "gpu3d_core");
+ 		gpu3d_shader_clk = devm_clk_get(gpc_dev, "gpu3d_shader");
+ 		gpu2d_clk = devm_clk_get(gpc_dev, "gpu2d_core");
+diff --git a/arch/arm/mach-imx/mxc.h b/arch/arm/mach-imx/mxc.h
+index c78174d..cd81f1e 100644
+--- a/arch/arm/mach-imx/mxc.h
++++ b/arch/arm/mach-imx/mxc.h
+@@ -155,10 +155,12 @@ extern unsigned int __mxc_cpu_type;
+ #endif
+ 
+ #ifndef __ASSEMBLY__
++#ifdef CONFIG_SOC_IMX6SL
+ static inline bool cpu_is_imx6sl(void)
+ {
+ 	return __mxc_cpu_type == MXC_CPU_IMX6SL;
+ }
++#endif
+ 
+ static inline bool cpu_is_imx6dl(void)
+ {
+diff --git a/arch/arm/mach-imx/pm-imx6.c b/arch/arm/mach-imx/pm-imx6.c
+index 587cc7e..b0a3264 100644
+--- a/arch/arm/mach-imx/pm-imx6.c
++++ b/arch/arm/mach-imx/pm-imx6.c
+@@ -221,19 +221,24 @@ int imx6_set_lpm(enum mxc_cpu_pwr_mode mode)
+ 		val |= BM_CLPCR_ARM_CLK_DIS_ON_LPM;
+ 		val &= ~BM_CLPCR_VSTBY;
+ 		val &= ~BM_CLPCR_SBYOS;
++#ifdef CONFIG_SOC_IMX6SL
+ 		if (cpu_is_imx6sl())
+ 			val |= BM_CLPCR_BYP_MMDC_CH0_LPM_HS;
+ 		else
++#endif
+ 			val |= BM_CLPCR_BYP_MMDC_CH1_LPM_HS;
+ 		break;
+ 	case STOP_POWER_ON:
+ 		val |= 0x2 << BP_CLPCR_LPM;
+ 		val &= ~BM_CLPCR_VSTBY;
+ 		val &= ~BM_CLPCR_SBYOS;
++#ifdef CONFIG_SOC_IMX6SL
+ 		if (cpu_is_imx6sl()) {
+ 			val |= BM_CLPCR_BYPASS_PMIC_READY;
+ 			val |= BM_CLPCR_BYP_MMDC_CH0_LPM_HS;
+-		} else {
++		} else
++#endif
++		{
+ 			val |= BM_CLPCR_BYP_MMDC_CH1_LPM_HS;
+ 		}
+ 		break;
+@@ -247,10 +252,13 @@ int imx6_set_lpm(enum mxc_cpu_pwr_mode mode)
+ 		val |= 0x3 << BP_CLPCR_STBY_COUNT;
+ 		val |= BM_CLPCR_VSTBY;
+ 		val |= BM_CLPCR_SBYOS;
++#ifdef CONFIG_SOC_IMX6SL
+ 		if (cpu_is_imx6sl()) {
+ 			val |= BM_CLPCR_BYPASS_PMIC_READY;
+ 			val |= BM_CLPCR_BYP_MMDC_CH0_LPM_HS;
+-		} else {
++		} else
++#endif
++		{
+ 			val |= BM_CLPCR_BYP_MMDC_CH1_LPM_HS;
+ 		}
+ 		break;
+@@ -304,12 +312,16 @@ static int imx6_pm_enter(suspend_state_t state)
+ 		imx6_set_lpm(STOP_POWER_ON);
+ 		imx6_set_cache_lpm_in_wait(true);
+ 		imx_gpc_pre_suspend(false);
++#ifdef CONFIG_SOC_IMX6SL
+ 		if (cpu_is_imx6sl())
+ 			imx6sl_set_wait_clk(true);
++#endif
+ 		/* Zzz ... */
+ 		cpu_do_idle();
++#ifdef CONFIG_SOC_IMX6SL
+ 		if (cpu_is_imx6sl())
+ 			imx6sl_set_wait_clk(false);
++#endif
+ 		imx_gpc_post_resume();
+ 		imx6_set_lpm(WAIT_CLOCKED);
+ 		break;
+@@ -328,8 +340,10 @@ static int imx6_pm_enter(suspend_state_t state)
+ 
+ 		imx6_restore_cpu_arch_regs();
+ 
++#ifdef CONFIG_SOC_IMX6SL
+ 		if (!cpu_is_imx6sl())
+ 			imx_smp_prepare();
++#endif
+ 		imx_anatop_post_resume();
+ 		imx_gpc_post_resume();
+ 		imx6_enable_rbc(false);
+diff --git a/arch/arm/mach-imx/system.c b/arch/arm/mach-imx/system.c
+index df3d1ff..86fb602 100644
+--- a/arch/arm/mach-imx/system.c
++++ b/arch/arm/mach-imx/system.c
+@@ -54,8 +54,11 @@ void mxc_restart(char mode, const char *cmd)
+ 	 * trigger external POR later. Use WDOG1 to reset in ldo-enable
+ 	 * mode. You can set it by "fsl,wdog-reset" in dts.
+ 	 */
+-	else if (wdog_source == 2 && (cpu_is_imx6q() || cpu_is_imx6dl() ||
+-			cpu_is_imx6sl()))
++	else if (wdog_source == 2 && (cpu_is_imx6q() || cpu_is_imx6dl()
++#ifdef CONFIG_SOC_IMX6SL
++			|| cpu_is_imx6sl()
++#endif
++		))
+ 		wcr_enable = 0x14;
+ 	else
+ 		wcr_enable = (1 << 2);
+@@ -97,8 +100,10 @@ void __init mxc_arch_reset_init_dt(void)
+ 
+ 	if (cpu_is_imx6q() || cpu_is_imx6dl())
+ 		np = of_find_compatible_node(NULL, NULL, "fsl,imx6q-gpc");
++#ifdef CONFIG_SOC_IMX6SL
+ 	else if (cpu_is_imx6sl())
+ 		np = of_find_compatible_node(NULL, NULL, "fsl,imx6sl-gpc");
++#endif
+ 
+ 	if (np)
+ 		of_property_read_u32(np, "fsl,wdog-reset", &wdog_source);
+@@ -109,8 +114,11 @@ void __init mxc_arch_reset_init_dt(void)
+ 	WARN_ON(!wdog_base);
+ 
+ 	/* Some i.MX6 boards use WDOG2 to reset board in ldo-bypass mode */
+-	if (wdog_source == 2 && (cpu_is_imx6q() || cpu_is_imx6dl() ||
+-		cpu_is_imx6sl())) {
++	if (wdog_source == 2 && (cpu_is_imx6q() || cpu_is_imx6dl()
++#ifdef CONFIG_SOC_IMX6SL
++		|| cpu_is_imx6sl()
++#endif
++		)) {
+ 		np = of_find_compatible_node(np, NULL, "fsl,imx21-wdt");
+ 		wdog_base = of_iomap(np, 0);
+ 		WARN_ON(!wdog_base);
+-- 
+1.7.10.4
+
