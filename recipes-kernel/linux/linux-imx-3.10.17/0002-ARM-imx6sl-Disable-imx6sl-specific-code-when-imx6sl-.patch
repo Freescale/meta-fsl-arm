@@ -1,0 +1,37 @@
+From d677e1c37de1fe3b91f8ccfe92fc98bec437d10e Mon Sep 17 00:00:00 2001
+From: Nikolay Dimitrov <picmaster@mail.bg>
+Date: Sun, 15 Feb 2015 13:10:27 +0200
+Subject: [PATCH] ARM: imx6sl: Disable imx6sl-specific code when imx6sl SOC
+ support is disabled
+
+Currently the build fails when CONFIG_SOC_IMX6SL is disabled, due to some
+hard-coded stuff. The patch purpose is to handle enabling/disabling this
+config option.
+
+Signed-off-by: Nikolay Dimitrov <picmaster@mail.bg>
+---
+ arch/arm/mach-imx/mxc.h |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm/mach-imx/mxc.h b/arch/arm/mach-imx/mxc.h
+index c78174d..de99050 100644
+--- a/arch/arm/mach-imx/mxc.h
++++ b/arch/arm/mach-imx/mxc.h
+@@ -155,10 +155,14 @@ extern unsigned int __mxc_cpu_type;
+ #endif
+ 
+ #ifndef __ASSEMBLY__
++# ifdef CONFIG_SOC_IMX6SL
+ static inline bool cpu_is_imx6sl(void)
+ {
+ 	return __mxc_cpu_type == MXC_CPU_IMX6SL;
+ }
++# else
++#  define cpu_is_imx6sl() (0)
++# endif
+ 
+ static inline bool cpu_is_imx6dl(void)
+ {
+-- 
+1.7.10.4
+
