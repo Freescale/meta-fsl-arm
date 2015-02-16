@@ -22,6 +22,9 @@ SRC_URI[sha256sum] = "d7d85e9f13c6dd58addab89847f3a8a67f6382a54135c7978c9a95368a
 
 inherit autotools pkgconfig
 
+# Skip warning
+UNKNOWN_CONFIGURE_WHITELIST += "--enable-neon"
+
 FILES_${PN} += " ${libdir}/xorg/modules/drivers/*.so"
 FILES_${PN}-dbg += " ${libdir}/xorg/modules/drivers/.debug"
 EXTRA_OECONF_armv7a = " --enable-neon "
