@@ -8,6 +8,12 @@ SRC_URI = "git://git.freescale.com/ppc/sdk/linux.git;branch=${SRCBRANCH} \
     file://defconfig \
 "
 
+SRC_URI += " \
+    file://0001-ARM-8158-LLVMLinux-use-static-inline-in-ARM-ftrace.patch \
+    file://0001-ARM-LLVMLinux-Change-extern-inline-to-static-inline.patch \
+    file://0003-use-static-inline-in-ARM-lifeboot.h.patch \
+"
+
 KERNEL_EXTRA_ARGS += "LOADADDR=${UBOOT_ENTRYPOINT}"
 ZIMAGE_BASE_NAME = "zImage-${PKGE}-${PKGV}-${PKGR}-${MACHINE}-${DATETIME}"
 
