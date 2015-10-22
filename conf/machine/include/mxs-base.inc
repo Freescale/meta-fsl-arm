@@ -32,7 +32,7 @@ MACHINE_SOCARCH_SUFFIX_mx23 = "-mx23"
 MACHINE_SOCARCH_SUFFIX_mx28 = "-mx28"
 
 MACHINE_ARCH_FILTER = "virtual/kernel"
-MACHINE_SOCARCH_FILTER = "libfslcodec libfslvpuwrap libfslparser gst-fsl-plugins"
+MACHINE_SOCARCH_FILTER = "libfslcodec libfslvpuwrap libfslparser gst-fsl-plugin"
 
 INHERIT += "fsl-dynamic-packagearch"
 
