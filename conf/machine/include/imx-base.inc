@@ -40,6 +40,7 @@ MACHINE_EXTRA_RRECOMMENDS = "kernel-modules"
 # DEFAULTTUNE_mx6 ?= "cortexa9t-neon"
 # handled by hardware
 DEFAULTTUNE_mx6 ?= "cortexa9thf-neon"
+DEFAULTTUNE_vf ?= "cortexa5thf-neon"
 
 # Sub-architecture support
 MACHINE_SOCARCH_SUFFIX ?= ""
