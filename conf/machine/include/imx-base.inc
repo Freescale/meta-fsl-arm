@@ -53,7 +53,7 @@ MACHINE_SOCARCH_SUFFIX_mx6sl = "-mx6sl"
 MACHINE_SOCARCH_SUFFIX_vf60 = "-vf60"
 MACHINE_SOCARCH_SUFFIX_vf50 = "-vf50"
 
-MACHINE_ARCH_FILTER = "virtual/kernel"
+MACHINE_ARCH_FILTER = "virtual/kernel imx-vpu"
 MACHINE_SOCARCH_FILTER = "libfslcodec libfslvpuwrap libfslparser gst-fsl-plugin"
 MACHINE_SOCARCH_FILTER_append_mx5 = " virtual/libgles1 virtual/libgles2 virtual/egl virtual/mesa virtual/libgl"
 MACHINE_SOCARCH_FILTER_append_mx6 = " virtual/libopenvg virtual/libgles1 virtual/libgles2 virtual/egl virtual/mesa virtual/libgl virtual/libg2d"
