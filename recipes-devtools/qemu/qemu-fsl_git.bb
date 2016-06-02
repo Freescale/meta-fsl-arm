@@ -28,6 +28,8 @@ DISABLE_STATIC = ""
 
 inherit pkgconfig
 
+do_compile_ptest_base[noexec] = "1"
+
 # Append build host pkg-config paths for native target since the host may provide sdl
 do_configure_prepend() {
     export PKG_CONFIG=${STAGING_DIR_NATIVE}${bindir_native}/pkg-config
