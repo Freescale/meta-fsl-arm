@@ -12,7 +12,9 @@ LIC_FILES_CHKSUM = " \
 
 SRCBRANCH = "master"
 SRC_URI = "git://git.freescale.com/ppc/sdk/u-boot.git;branch=${SRCBRANCH}"
-SRC_URI += "file://0001-uboot-support-gcc5.patch "
+SRC_URI += "file://0001-uboot-support-gcc5.patch \
+    file://fix-build-error-under-gcc6.patch \
+"
 SRCREV = "6ba8eedbcdc4b063f59a63e6288b938af739e8ad"
 
 LOCALVERSION ?= "+ls1"
