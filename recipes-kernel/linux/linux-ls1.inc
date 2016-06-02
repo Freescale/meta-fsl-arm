@@ -12,6 +12,7 @@ SRC_URI += " \
     file://0001-ARM-8158-LLVMLinux-use-static-inline-in-ARM-ftrace.patch \
     file://0001-ARM-LLVMLinux-Change-extern-inline-to-static-inline.patch \
     file://0003-use-static-inline-in-ARM-lifeboot.h.patch \
+    file://Fix-the-compile-issue-under-gcc6.patch \
 "
 
 KERNEL_EXTRA_ARGS += "LOADADDR=${UBOOT_ENTRYPOINT}"
