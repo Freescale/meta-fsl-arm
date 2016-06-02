@@ -12,12 +12,19 @@ PV = "2.2.0+${SRCPV}"
 # to qemu 2.3:
 PACKAGECONFIG[glx] = "--enable-glx,--disable-glx,mesa"
 
+# remove not supported PACKAGECONFIG by this v2.2.0 based recipe
+PACKAGECONFIG[gcrypt] = ""
+PACKAGECONFIG[gnutls] = ""
+PACKAGECONFIG[nettle] = ""
+PACKAGECONFIG[nss] = ""
+
 SRC_URI = "git://git.freescale.com/ppc/sdk/qemu.git;branch=master"
 SRCREV = "00ac004143e9fe46944a1885b04268fcd3a95a3a"
 
 S = "${WORKDIR}/git"
 
 QEMU_TARGETS = "arm"
+DISABLE_STATIC = ""
 
 inherit pkgconfig
 
