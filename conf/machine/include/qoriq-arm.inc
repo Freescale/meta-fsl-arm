@@ -1,5 +1,3 @@
-require conf/machine/include/soc-family.inc
-
 # Freescale BSP default providers
 PREFERRED_PROVIDER_u-boot_ls102xa ?= "u-boot-ls1"
 PREFERRED_PROVIDER_virtual/bootloader_ls102xa ?= "u-boot-ls1"
