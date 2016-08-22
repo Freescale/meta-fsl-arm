@@ -1,6 +1,6 @@
 Freescale Software Content Register
 
-Release - Linux 3.14.38-6QP_ga
+Release - Linux 3.14.52-1.1.0_ga
 
 Date Created:              2015-August-24
 
@@ -20,7 +20,7 @@ Type of content:           Source code
 
 Description and comments:  The Linux kernel with Freescale-specific drivers
 
-Release Location:          git.freescale.com branch imx_3.14.38_6qp_ga
+Release Location:          git.freescale.com branch imx_3.14.52_1.1.0_ga
 
 Origin:                    Freescale Semiconductor, Inc.
                            kernel.org (GPL-2.0+) - https://www.kernel.org/
@@ -39,7 +39,7 @@ Type of content:           Source code
 
 Description and comments:  Bootloader with Freescale-specific capabilities
 
-Release Location:          git.freescale.com branch imx_v2015.04_3.14.38_6qp_ga
+Release Location:          git.freescale.com branch imx_v2015.04_3.14.52_1.1.0_ga
 
 Origin:                    Freescale Semiconductor, Inc.
                            Das U-Boot - Universal Bootloader (LGPL-2.0+) - http://www.denx.de/wiki/U-Boot/WebHome
@@ -48,11 +48,11 @@ Origin:                    Freescale Semiconductor, Inc.
 
 --------------------------------------------
 
-Package:                   firmware-imx-5.2.bin
+Package:                   firmware-imx-5.3.bin
 
-Outgoing License:          LA_OPT_FSL_OPEN_3RD_PARTY_IP v8 June 2015
+Outgoing License:          LA_OPT_BASE_LICENSE v10 November 2015
 
-License Files:             COPYING: LA_OPT_FSL_OPEN_3RD_PARTY_IP v8 June 2015
+License Files:             COPYING: LA_OPT_BASE_LICENSE v10 November 2015
 
 Package Category:          BSP
 
@@ -67,7 +67,7 @@ Origin:                    Freescale Semiconductor, Inc.
 
 --------------------------------------------
 
-Package:                   imx-kobs-5.1.tar.gz
+Package:                   imx-kobs-5.3.tar.gz
 
 Outgoing License:          GPL-2.0+
 
@@ -88,7 +88,7 @@ Origin:                    Freescale Semiconductor, Inc.
 
 --------------------------------------------
 
-Package:                   imx-lib-5.1.tar.gz
+Package:                   imx-lib-5.3.tar.gz
 
 Outgoing License:          LGPL-2.1+
 
@@ -106,7 +106,7 @@ Origin:                    Freescale Semiconductor, Inc.
 
 --------------------------------------------
 
-Package:                   imx-test-5.2.tar.gz
+Package:                   imx-test-5.3.tar.gz
 
 Outgoing License:          Each test has its own license
 
@@ -133,11 +133,11 @@ Origin:                    Freescale Semiconductor, Inc.
 
 --------------------------------------------
 
-Package:                   imx-vpu-5.4.31.bin
+Package:                   imx-vpu-5.4.32.bin
 
-Outgoing License:          LA_OPT_FSL_OPEN_3RD_PARTY_IP v8 June 2015
+Outgoing License:          LA_OPT_BASE_LICENSE v10 November 2015
 
-License Files:             COPYING: LA_OPT_FSL_OPEN_3RD_PARTY_IP v8 June 2015
+License Files:             COPYING: LA_OPT_BASE_LICENSE v10 November 2015
 
 Package Category:          BSP
 
@@ -172,13 +172,13 @@ Origin:                    Freescale Semiconductor, Inc.
 GRAPHICS PACKAGES
 --------------------------------------------
 
-Package:                   imx-gpu-viv-5.0.11.p7.1-hfp.bin
-                           imx-gpu-viv-5.0.11.p7.1-sfp.bin
+Package:                   imx-gpu-viv-5.0.11.p7.4-hfp.bin
+                           imx-gpu-viv-5.0.11.p7.4-sfp.bin
 
 
-Outgoing License:          LA_OPT_FSL_OPEN_3RD_PARTY_IP v8 June 2015
+Outgoing License:          LA_OPT_BASE_LICENSE v10 November 2015
 
-License Files:             COPYING: LA_OPT_FSL_OPEN_3RD_PARTY_IP v8 June 2015
+License Files:             COPYING: LA_OPT_BASE_LICENSE v10 November 2015
 
 Package Category:          Graphics
 
@@ -199,7 +199,7 @@ Origin:                    Freescale Semiconductor, Inc.
 
 --------------------------------------------
 
-Package:                   kernel-module-imx-gpu-viv-5.0.11.p7.1.tar.gz
+Package:                   kernel-module-imx-gpu-viv-5.0.11.p7.4.tar.gz
 
 Outgoing License:          GPL-2.0+
 
@@ -218,11 +218,11 @@ Origin:                    Freescale Semiconductor, Inc.
 
 --------------------------------------------
 
-Package:                   xserver-xorg-video-imx-viv-5.0.11.p7.1.tar.gz
+Package:                   xserver-xorg-video-imx-viv-5.0.11.p7.4.tar.gz
 
-Outgoing License:          GPL-2.0+
+Outgoing License:          MIT
 
-License Files:             See source code.
+License Files:             COPYING-MIT: MIT License
 
 Package Category:          Graphics
 
@@ -240,11 +240,11 @@ Origin:                    Freescale Semiconductor, Inc.
 
 --------------------------------------------
 
-Package:                   fsl-gpu-sdk-2.2.bin
+Package:                   fsl-gpu-sdk-2.2.1.bin
 
-Outgoing License:          LA_OPT_FSL_OPEN_3RD_PARTY_IP v8 June 2015
+Outgoing License:          LA_OPT_BASE_LICENSE v10 November 2015
 
-License Files:             COPYING: LA_OPT_FSL_OPEN_3RD_PARTY_IP v8 June 2015
+License Files:             COPYING: LA_OPT_BASE_LICENSE v10 November 2015
 
 Package Category:          Graphics
 
@@ -268,7 +268,7 @@ Origin:                    Freescale Semiconductor, Inc.
 MULTIMEDIA PACKAGES
 --------------------------------------------
 
-Package:                   gst1.0-fsl-plugins-4.0.7.tar.gz
+Package:                   gst1.0-fsl-plugins-4.0.8.tar.gz
 
 Outgoing License:          LGPL-2.1+
 
@@ -291,11 +291,11 @@ Origin:                    Freescale Semiconductor, Inc.
 
 --------------------------------------------
 
-Package:                   libfslcodec-4.0.7.bin
+Package:                   libfslcodec-4.0.8.bin
 
-Outgoing License:          LA_OPT_FSL_OPEN_3RD_PARTY_IP v8 June 2015
+Outgoing License:          LA_OPT_BASE_LICENSE v10 November 2015
 
-License Files:             COPYING: LA_OPT_FSL_OPEN_3RD_PARTY_IP v8 June 2015
+License Files:             COPYING: LA_OPT_BASE_LICENSE v10 November 2015
 
 Package Category:          Multimedia
 
@@ -309,11 +309,11 @@ Origin:                    Freescale Semiconductor, Inc.
 
 --------------------------------------------
 
-Package:                   libfslparser-4.0.7.bin
+Package:                   libfslparser-4.0.8.bin
 
-Outgoing License:          LA_OPT_FSL_OPEN_3RD_PARTY_IP v8 June 2015
+Outgoing License:          LA_OPT_BASE_LICENSE v10 November 2015
 
-License Files:             COPYING: LA_OPT_FSL_OPEN_3RD_PARTY_IP v8 June 2015
+License Files:             COPYING: LA_OPT_BASE_LICENSE v10 November 2015
 
 Package Category:          Multimedia
 
@@ -327,11 +327,11 @@ Origin:                    Freescale Semiconductor, Inc.
 
 --------------------------------------------
 
-Package:                   libfslvpuwrap-1.0.61.bin
+Package:                   libfslvpuwrap-1.0.62.bin
 
-Outgoing License:          LA_OPT_FSL_OPEN_3RD_PARTY_IP v8 June 2015
+Outgoing License:          LA_OPT_BASE_LICENSE v10 November 2015
 
-License Files:             COPYING: LA_OPT_FSL_OPEN_3RD_PARTY_IP v8 June 2015
+License Files:             COPYING: LA_OPT_BASE_LICENSE v10 November 2015
 
 Package Category:          Multimedia
 
@@ -346,11 +346,11 @@ Origin:                    Freescale Semiconductor, Inc.
 
 --------------------------------------------
 
-Package:                   fslqtapplications-1.0.5.bin
+Package:                   fslqtapplications-1.0.6.bin
 
-Outgoing License:          LA_OPT_FSL_OPEN_3RD_PARTY_IP v8 June 2015
+Outgoing License:          LA_OPT_BASE_LICENSE v10 November 2015
 
-License Files:             COPYING: LA_OPT_FSL_OPEN_3RD_PARTY_IP v8 June 2015
+License Files:             COPYING: LA_OPT_BASE_LICENSE v10 November 2015
 
 Package Category:          Multimedia
 
